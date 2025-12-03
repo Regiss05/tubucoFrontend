@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
 import ProductCard from './components/ProductCard';
 import SignIn from './components/SignIn';
@@ -50,8 +50,8 @@ interface WindowWithEnv extends Window {
 const _window: WindowWithEnv = window;
 const backendURL = _window.__ENV && _window.__ENV.backendURL;
 
-const axiosClient = axios.create({ baseURL: `${backendURL}`, timeout: 20000, withCredentials: true });
-const config = { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } };
+const axiosClient = axios.create({ baseURL: `${backendURL}`, timeout: 20000, withCredentials: true});
+const config = {headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'}};
 
 
 export default function Shop() {
@@ -59,7 +59,6 @@ export default function Shop() {
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const signIn = async () => {
-    console.log('clicked');
     const scopes = ['username', 'payments', 'roles', 'in_app_notifications'];
     const authResult: AuthResult = await window.Pi.authenticate(scopes, onIncompletePaymentFound);
     signInUser(authResult);
@@ -86,7 +85,7 @@ export default function Shop() {
   };
 
   const signInUser = (authResult: AuthResult) => {
-    axiosClient.post('/user/signin', { authResult });
+    axiosClient.post('/user/signin', {authResult});
     return setShowModal(false);
   }
 
@@ -99,7 +98,7 @@ export default function Shop() {
   }
 
   const orderProduct = async (memo: string, amount: number, paymentMetadata: MyPaymentMetadata) => {
-    if (user === null) {
+    if(user === null) {
       return setShowModal(true);
     }
     const paymentData = { amount, memo, metadata: paymentMetadata };
@@ -115,22 +114,22 @@ export default function Shop() {
 
   const onIncompletePaymentFound = (payment: PaymentDTO) => {
     console.log("onIncompletePaymentFound", payment);
-    return axiosClient.post('/payments/incomplete', { payment });
+    return axiosClient.post('/payments/incomplete', {payment});
   }
 
   const onReadyForServerApproval = (paymentId: string) => {
     console.log("onReadyForServerApproval", paymentId);
-    axiosClient.post('/payments/approve', { paymentId }, config);
+    axiosClient.post('/payments/approve', {paymentId}, config);
   }
 
   const onReadyForServerCompletion = (paymentId: string, txid: string) => {
     console.log("onReadyForServerCompletion", paymentId, txid);
-    axiosClient.post('/payments/complete', { paymentId, txid }, config);
+    axiosClient.post('/payments/complete', {paymentId, txid}, config);
   }
 
   const onCancel = (paymentId: string) => {
     console.log("onCancel", paymentId);
-    return axiosClient.post('/payments/cancelled_payment', { paymentId });
+    return axiosClient.post('/payments/cancelled_payment', {paymentId});
   }
 
   const onError = (error: Error, payment?: PaymentDTO) => {
@@ -143,7 +142,7 @@ export default function Shop() {
 
   return (
     <>
-      <Header user={user} onSignIn={signIn} onSignOut={signOut} onSendTestNotification={onSendTestNotification} />
+      <Header user={user} onSignIn={signIn} onSignOut={signOut} onSendTestNotification={onSendTestNotification}/>
 
       <ProductCard
         name="Apple Pie"
@@ -162,7 +161,7 @@ export default function Shop() {
         onClickBuy={() => orderProduct("Order Lemon Meringue Pie", 5, { productId: 'lemon_pie_1' })}
       />
 
-      {showModal && <SignIn onSignIn={signIn} onModalClose={onModalClose} />}
+      { showModal && <SignIn onSignIn={signIn} onModalClose={onModalClose} /> }
     </>
   );
 }
